@@ -9,27 +9,31 @@
 
 .face_up {
     background-color: lightcoral;
-    border: 1px solid black;
+    border: 2.5px solid lightcoral;
 }
 
 .face_down {
     background-color: lightblue;
-    border: 1px solid black;
+    border: 2.5px solid lightblue;
 }
 
 .empty {
-    border: 1px black solid;
+    border: 2.5px white solid;
 }
 
 .suit_pile {
     font-size: 20pt;
     background-color: lightgray;
-    border: 1px black solid;
+    border: 2.5px lightgray solid;
     margin-right: 5px;
 }
 
 .three_flip {
     margin-right: 5px;
+}
+
+.selected {
+    border: 2.5px green solid;
 }
 
 #draw_pile {
@@ -49,10 +53,10 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    width: 330px;
+    width: 375px;
     margin-top: 25px;
 }
 
 #playing_table > div {
-    margin: 0px 10px 5px 0px;
+    margin: 0px 10px 4px 0px;
 }
