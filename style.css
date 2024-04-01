@@ -1,0 +1,58 @@
+.card {
+    display: flex;
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.face_up {
+    background-color: lightcoral;
+    border: 1px solid black;
+}
+
+.face_down {
+    background-color: lightblue;
+    border: 1px solid black;
+}
+
+.empty {
+    border: 1px black solid;
+}
+
+.suit_pile {
+    font-size: 20pt;
+    background-color: lightgray;
+    border: 1px black solid;
+    margin-right: 5px;
+}
+
+.three_flip {
+    margin-right: 5px;
+}
+
+#draw_pile {
+    margin-right: 30px;
+}
+
+#hearts_pile {
+    margin-left: 150px
+}
+
+#top_container {
+    display: flex;
+    flex-direction: row;
+}
+
+#playing_table {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 330px;
+    margin-top: 25px;
+}
+
+#playing_table > div {
+    margin: 0px 10px 5px 0px;
+}
