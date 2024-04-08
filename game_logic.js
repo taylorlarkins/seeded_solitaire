@@ -28,16 +28,7 @@ for(let i = 0; i < 4; i++) {
 //Layout the cards
 deck = shuffle(deck);
 var draw_pile = deck.slice(0, 24);
-var playing_table = [[deck[25], [deck[26]], [], [], [], [], []], [null, deck[46], deck[47], deck[48], deck[49], deck[50], deck[51]]];
-var deck_pos = 27;
-var cap = 2;
-for(let i = 2; i < 7; i++) {
-    for(let j = 0; j < cap; j++) {
-        playing_table[0][i].push(deck[deck_pos]);
-        deck_pos++;
-    }
-    cap++
-}
+var playing_table = [[deck[25], [deck[26]], [deck[27], deck[28]], [deck[29], deck[30], deck[31]], [deck[32], deck[33], deck[34], deck[35]], [deck[36], deck[37], deck[38], deck[39], deck[40]], [deck[41], deck[42], deck[43], deck[44], deck[45], deck[46]]], [null, deck[24], deck[47], deck[48], deck[49], deck[50], deck[51]]];
 for(let i = 0; i < 12; i++) {
     playing_table.push([null, null, null, null, null, null, null])
 }
@@ -93,10 +84,10 @@ function shuffle(deck) {
 function card_selection(i) {
     var loc = [Math.floor(i / 7), i % 7];
     var card = playing_table[loc[0]][loc[1]];
-    if(card != null && card.name != undefined) { //TODO: account for moving Ks to emtpy columns
+    if(card != null && card.name != undefined) {
         console.log(card.name);
         if(selected_card != null) {
-            if(validate_move(selected_card, card)) {
+            if(validate_move(selected_card, selected_id,  card, i)) {
                 move(selected_card, selected_id, selected_loc, i, loc);
                 remove_class(selected_id, "selected");
                 selected_card = selected_id = selected_loc = null;
@@ -108,11 +99,23 @@ function card_selection(i) {
         selected_id = i;
         selected_loc = loc;
         add_class(i, "selected");
+    } else if(card == null && selected_card != null && i <= 6 && selected_card.value == 13) { //Moving a K to an empty column
+        var king_e = document.getElementById(`playing_table_${selected_id}`);
+        var target_e = document.getElementById(`playing_table_${i}`);
+        target_e.innerText = selected_card.name;
+        target_e.classList.replace("empty", "face_up");
+        playing_table[loc[0]][loc[1]] = selected_card;
+        king_e.innerText = "";
+        king_e.classList.replace("face_up", "empty");
+        playing_table[selected_loc[0]][selected_loc[1]] = null;
+        if(playing_table[selected_loc[0] + 1][selected_loc[1]] != null) {
+            move(playing_table[selected_loc[0] + 1][selected_loc[1]], selected_id + 7, [selected_loc[0] + 1, selected_loc[1]], i, [loc[0], loc[1]]);
+        }
     }
 }
 
-function validate_move(card, target) {
-    if(card != target && card.value + 1 == target.value && card.color != target.color) {
+function validate_move(card, card_id, target, target_id) {
+    if(card != target && card.value + 1 == target.value && card.color != target.color && card_id != target_id + 7) {
         return true;
     }
     return false;
@@ -125,28 +128,33 @@ function move(card, card_id, card_loc, target_id, target_loc) {
     below_target_e.innerText = card.name;
     below_target_e.classList.replace("empty", "face_up");
     playing_table[target_loc[0] + 1][target_loc[1]] = card;
-
-    if(card_loc[0] == 1) {
+    
+    //Checks if a new card needs to be revealed.
+    if(card_loc[0] == 1 && playing_table[0][card_loc[1]] != null && playing_table[0][card_loc[1]] != undefined) {
         var above = playing_table[0][card_loc[1]]
-        if(above != null &&  above.name == undefined) {
-            var above_e = document.getElementById(`playing_table_${card_id - 7}`);
-            var new_card = above.pop();
-            if(above.length == 0) {
-                above_e.innerText = new_card.name;
-                playing_table[0][card_loc[1]] = new_card;
-                above_e.classList.replace("face_down", "face_up");
-                card_e.classList.replace("face_up", "empty");
-                card_e.innerText = "";
-            } else {
-                card_e.innerText = new_card.name;
-                playing_table[card_loc[0]][card_loc[1]] = new_card;
-                above_e.innerText--;
-            }
+        var above_e = document.getElementById(`playing_table_${card_id - 7}`);
+        var new_card = above.pop();
+        if(above.length == 0) {
+            above_e.innerText = new_card.name;
+            card_e.innerText = "";
+            playing_table[0][card_loc[1]] = new_card;
+            playing_table[1][card_loc[1]] = null;
+            above_e.classList.replace("face_down", "face_up");
+            card_e.classList.replace("face_up", "empty");
+        } else {
+            card_e.innerText = new_card.name;
+            playing_table[card_loc[0]][card_loc[1]] = new_card;
+            above_e.innerText--;
         }
     } else {
         card_e.classList.replace("face_up", "empty");
         card_e.innerText = "";
         playing_table[card_loc[0]][card_loc[1]] = null;
+    }
+
+    //See if there is a card below that needs to be moved
+    if(playing_table[card_loc[0] + 1][card_loc[1]] != null) {
+        move(playing_table[card_loc[0] + 1][card_loc[1]], card_id + 7, [card_loc[0] + 1, card_loc[1]], target_id + 7, [target_loc[0] + 1, target_loc[1]])
     }
 }
 
